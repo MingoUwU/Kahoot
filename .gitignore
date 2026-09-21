@@ -5,3 +5,6 @@ Thumbs.db
 .env.local
 .vscode/
 .idea/
+*.zip
+*.crx
+*.pem

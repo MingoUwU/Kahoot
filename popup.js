@@ -121,7 +121,14 @@
 
     async function broadcastToTabs(payload) {
         try {
-            const tabs = await chrome.tabs.query({ url: ['https://kahoot.it/*', 'https://*.kahoot.it/*'] });
+            const tabs = await chrome.tabs.query({
+                url: [
+                    '*://kahoot.it/*',
+                    '*://*.kahoot.it/*',
+                    '*://kahoot.com/*',
+                    '*://*.kahoot.com/*'
+                ]
+            });
             tabs.forEach(tab => {
                 if (tab?.id) {
                     chrome.tabs.sendMessage(tab.id, { action: 'syncConfig', payload }, () => {

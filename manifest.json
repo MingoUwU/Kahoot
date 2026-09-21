@@ -3,9 +3,12 @@
     "name": "KQH AI - Minimalist Kahoot Solver",
     "version": "3.1.0",
     "description": "Ultra-fast direct AI Kahoot quiz solver with auto-answer macro",
-    "permissions": ["tabs", "activeTab", "storage", "alarms", "clipboardWrite"],
+    "permissions": ["tabs", "activeTab", "storage", "alarms", "clipboardWrite", "scripting"],
     "host_permissions": [
-        "https://kahoot.it/*",
+        "*://kahoot.it/*",
+        "*://*.kahoot.it/*",
+        "*://kahoot.com/*",
+        "*://*.kahoot.com/*",
         "https://generativelanguage.googleapis.com/*",
         "https://api.openai.com/*"
     ],
@@ -13,13 +16,23 @@
         "service_worker": "background.js"
     },
     "content_scripts": [{
-            "matches": ["https://kahoot.it/*"],
+            "matches": [
+                "*://kahoot.it/*",
+                "*://*.kahoot.it/*",
+                "*://kahoot.com/*",
+                "*://*.kahoot.com/*"
+            ],
             "js": ["content-bridge.js"],
             "world": "ISOLATED",
             "run_at": "document_start"
         },
         {
-            "matches": ["https://kahoot.it/*"],
+            "matches": [
+                "*://kahoot.it/*",
+                "*://*.kahoot.it/*",
+                "*://kahoot.com/*",
+                "*://*.kahoot.com/*"
+            ],
             "js": ["content.js"],
             "world": "MAIN",
             "run_at": "document_start"
@@ -48,6 +61,11 @@
             "icons/icon48.png",
             "icons/icon128.png"
         ],
-        "matches": ["https://kahoot.it/*"]
+        "matches": [
+            "*://kahoot.it/*",
+            "*://*.kahoot.it/*",
+            "*://kahoot.com/*",
+            "*://*.kahoot.com/*"
+        ]
     }]
 }
