@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>KQH AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            width: 320px;
+            min-width: 320px;
+            max-width: 320px;
+            background: #090a0f;
+            color: #ededed;
+            overflow-x: hidden;
+        }
+
+        body {
+            padding: 16px;
+            background-image: 
+                radial-gradient(circle at 100% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.12) 0%, transparent 40%);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-logo {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            background: linear-gradient(135deg, #6366f1, #10b981);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .brand-title {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: #ffffff;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .status-dot.active {
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+        }
+
+        /* Segmented Provider Tabs */
+        .segmented-control {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 3px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+        }
+
+        .segmented-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .segmented-btn.active {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Form Controls */
+        .control-group {
+            margin-bottom: 12px;
+        }
+
+        .control-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+
+        .control-link {
+            color: #818cf8;
+            text-decoration: none;
+            text-transform: none;
+            letter-spacing: 0;
+            font-size: 10px;
+            transition: color 0.2s ease;
+        }
+
+        .control-link:hover {
+            color: #a5b4fc;
+        }
+
+        .select-input, .text-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            padding: 8px 10px;
+            border-radius: 7px;
+            font-size: 12px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .select-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+
+        .select-input option {
+            background: #12131e;
+            color: #ffffff;
+        }
+
+        .select-input:focus, .text-input:focus {
+            border-color: rgba(99, 102, 241, 0.8);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input {
+            padding-right: 32px;
+        }
+
+        .toggle-key-btn {
+            position: absolute;
+            right: 8px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px;
+        }
+
+        .toggle-key-btn:hover {
+            color: #ffffff;
+        }
+
+        /* Macro Section */
+        .macro-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 14px;
+            margin-bottom: 14px;
+        }
+
+        .macro-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .macro-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* Minimal Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 32px;
+            height: 18px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.15);
+            transition: 0.25s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.25s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(14px);
+        }
+
+        .macro-slider-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 8px;
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+        .range-slider {
+            flex: 1;
+            accent-color: #10b981;
+            cursor: pointer;
+            height: 4px;
+        }
+
+        .delay-value {
+            font-family: monospace;
+            color: #10b981;
+            font-weight: 700;
+            font-size: 11px;
+            min-width: 30px;
+            text-align: right;
+        }
+
+        /* Primary Button */
+        .btn-primary {
+            width: 100%;
+            padding: 9px 12px;
+            background: #10b981;
+            border: none;
+            border-radius: 7px;
+            color: #090a0f;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: #34d399;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Toast Feedback */
+        .toast {
+            font-size: 11px;
+            padding: 7px 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .toast.success {
+            display: block;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #6ee7b7;
+        }
+
+        .toast.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="brand">
+            <div class="brand-logo">K</div>
+            <span class="brand-title">KQH AI</span>
+        </div>
+        <div class="status-pill">
+            <span class="status-dot" id="statusDot"></span>
+            <span id="statusLabel">Offline</span>
+        </div>
+    </div>
+
+    <!-- Provider Tabs -->
+    <div class="segmented-control">
+        <button type="button" class="segmented-btn active" id="tabGemini">Google Gemini</button>
+        <button type="button" class="segmented-btn" id="tabOpenAI">OpenAI</button>
+    </div>
+
+    <!-- Model Selection -->
+    <div class="control-group">
+        <div class="control-label">Model</div>
+        <select id="modelSelect" class="select-input"></select>
+    </div>
+
+    <!-- API Key Input -->
+    <div class="control-group">
+        <div class="control-label">
+            <span>API Key</span>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" id="apiKeyLink" class="control-link">Get key ↗</a>
+        </div>
+        <div class="input-wrapper">
+            <input type="password" id="apiKeyInput" class="text-input" placeholder="AIzaSy..." spellcheck="false" autocomplete="off">
+            <button type="button" id="toggleKeyBtn" class="toggle-key-btn" title="Toggle visibility">👁</button>
+        </div>
+    </div>
+
+    <!-- Macro Auto-Answer -->
+    <div class="macro-card">
+        <div class="macro-header">
+            <div class="macro-title">
+                <span>⚡ Auto-Click Macro</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="macroToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="macro-slider-row" id="delayRow">
+            <span>Delay</span>
+            <input type="range" id="delaySlider" class="range-slider" min="0.3" max="4.0" step="0.1" value="1.2">
+            <span class="delay-value" id="delayValue">1.2s</span>
+        </div>
+    </div>
+
+    <!-- Save Button -->
+    <button type="button" id="saveBtn" class="btn-primary">Save & Connect</button>
+
+    <!-- Feedback Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
