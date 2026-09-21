@@ -259,48 +259,53 @@
     // DIRECT AI ENGINES WITH AUTO-FALLBACK
     // ==========================================
 
-    // Gemini API with multi-model auto-fallback (2.5 -> 2.0 -> 1.5)
+    // Gemini API with multi-version & multi-model auto-fallback (v1/v1beta)
     async function callGemini(question, choices, qType = 'quiz', imageUrl) {
-        const primaryModel = state.model || 'gemini-2.5-flash';
-        const candidateModels = [
-            primaryModel,
-            'gemini-2.0-flash',
-            'gemini-1.5-flash'
+        const primaryModel = state.model || 'gemini-2.0-flash';
+        
+        const targets = [
+            { ver: primaryModel.startsWith('gemini-1.5') ? 'v1' : 'v1beta', model: primaryModel },
+            { ver: 'v1beta', model: 'gemini-2.0-flash' },
+            { ver: 'v1beta', model: 'gemini-2.0-flash-lite' },
+            { ver: 'v1',     model: 'gemini-1.5-flash' },
+            { ver: 'v1',     model: 'gemini-1.5-flash-8b' },
+            { ver: 'v1beta', model: 'gemini-2.5-flash' }
         ];
-        const modelList = [...new Set(candidateModels)];
+
+        const seen = new Set();
+        const candidateTargets = targets.filter(t => {
+            const k = `${t.ver}:${t.model}`;
+            if (seen.has(k)) return false;
+            seen.add(k);
+            return true;
+        });
 
         let prompt = '';
         if (qType === 'open_ended') {
-            prompt = `Question: ${question}\nReturn ONLY the exact short 1-2 word answer with no punctuation or explanation:`;
+            prompt = `You are an instant Kahoot solver. Answer this question in 1-3 words only: "${question}"`;
         } else if (qType === 'jumble') {
-            prompt = `Question: ${question}\nTiles: ${choices.join(', ')}\nArrange the tiles in the correct sequence. Return ONLY the ordered sequence or the final word:`;
+            prompt = `You are a Kahoot solver. Question: "${question}". Available tiles: ${choices.join(', ')}. Return ONLY the ordered items or the final word:`;
         } else {
-            prompt = `Question: ${question}\nChoices:\n${choices.map((c, i) => `${i + 1}. ${c}`).join('\n')}\nReturn ONLY the exact text of the single correct choice:`;
+            prompt = `You are an expert Kahoot quiz solver.\nQuestion: ${question}\nChoices:\n${choices.map((c, i) => `${i + 1}. ${c}`).join('\n')}\nReturn ONLY the exact text of the single correct choice:`;
         }
 
         let lastErr = null;
-        for (const currentModel of modelList) {
+        for (const target of candidateTargets) {
             try {
-                const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${currentModel}:generateContent?key=${state.apiKey}`;
-                
-                const generationConfig = {
-                    temperature: 0.0,
-                    maxOutputTokens: 35
-                };
-                if (currentModel.includes('2.5') || currentModel.includes('2.0')) {
-                    generationConfig.thinkingConfig = { thinkingBudget: 0 };
-                }
-
-                const bodyPayload = {
-                    contents: [{ parts: [{ text: prompt }] }],
-                    systemInstruction: { parts: [{ text: "You are an instant Kahoot solver. Output strictly the direct answer only." }] },
-                    generationConfig
-                };
+                const endpoint = `https://generativelanguage.googleapis.com/${target.ver}/models/${target.model}:generateContent?key=${state.apiKey}`;
 
                 const res = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(bodyPayload)
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: prompt }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.1,
+                            maxOutputTokens: 60
+                        }
+                    })
                 });
 
                 if (!res.ok) {
@@ -322,15 +327,15 @@
                 return {
                     answer: rawText || 'No answer found',
                     confidence: 0.98,
-                    modelUsed: currentModel
+                    modelUsed: target.model
                 };
             } catch (err) {
                 lastErr = err;
-                console.warn(`[KQH AI] Model ${currentModel} failed (${err.message}). Retrying fallback model...`);
+                console.warn(`[KQH AI] Model ${target.ver}/${target.model} failed (${err.message}). Retrying next target...`);
             }
         }
 
-        throw lastErr || new Error('All AI model attempts failed');
+        throw lastErr || new Error('All Gemini API model attempts failed');
     }
 
     // OpenAI API

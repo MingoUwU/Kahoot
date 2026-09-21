@@ -4,10 +4,10 @@
 
     const MODEL_MAP = {
         gemini: [
-            { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash (Ultra Fast)' },
-            { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (Fast & Smart)' },
-            { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (Stable)' },
-            { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro (Deep Reasoning)' }
+            { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (Fast & Stable)' },
+            { id: 'gemini-2.0-flash-lite', name: 'Gemini 2.0 Flash Lite (Ultra Fast)' },
+            { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (Standard)' },
+            { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash (Preview)' }
         ],
         openai: [
             { id: 'gpt-4o-mini', name: 'GPT-4o Mini (Fast & Compact)' },
@@ -85,7 +85,8 @@
         if (!apiKey) throw new Error('API Key is required');
 
         if (provider === 'gemini') {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+            const ver = model.startsWith('gemini-1.5') ? 'v1' : 'v1beta';
+            const url = `https://generativelanguage.googleapis.com/${ver}/models/${model}:generateContent?key=${apiKey}`;
             const res = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
