@@ -4,10 +4,10 @@
 
     const MODEL_MAP = {
         gemini: [
-            { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (Fast & Stable)' },
-            { id: 'gemini-2.0-flash-lite', name: 'Gemini 2.0 Flash Lite (Ultra Fast)' },
-            { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (Standard)' },
-            { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash (Preview)' }
+            { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (Fast · Free 15 RPM)' },
+            { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (Next-Gen)' },
+            { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro (Deep Reasoning)' },
+            { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash (Preview · 5 RPM)' }
         ],
         openai: [
             { id: 'gpt-4o-mini', name: 'GPT-4o Mini (Fast & Compact)' },
@@ -85,8 +85,7 @@
         if (!apiKey) throw new Error('API Key is required');
 
         if (provider === 'gemini') {
-            const ver = model.startsWith('gemini-1.5') ? 'v1' : 'v1beta';
-            const url = `https://generativelanguage.googleapis.com/${ver}/models/${model}:generateContent?key=${apiKey}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
             const res = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -127,7 +126,9 @@
                     '*://kahoot.it/*',
                     '*://*.kahoot.it/*',
                     '*://kahoot.com/*',
-                    '*://*.kahoot.com/*'
+                    '*://*.kahoot.com/*',
+                    '*://quiz.com/*',
+                    '*://*.quiz.com/*'
                 ]
             });
             tabs.forEach(tab => {
@@ -151,7 +152,7 @@
             ]);
 
             const provider = stored.kqh_provider || 'gemini';
-            const model = stored.kqh_model || (provider === 'gemini' ? 'gemini-2.5-flash' : 'gpt-4o-mini');
+            const model = stored.kqh_model || (provider === 'gemini' ? 'gemini-1.5-flash' : 'gpt-4o-mini');
             const apiKey = stored.kqh_api_key || '';
             const macroEnabled = Boolean(stored.kqh_macro_enabled);
             const macroDelay = stored.kqh_macro_delay !== undefined ? stored.kqh_macro_delay : 1.2;
@@ -229,7 +230,7 @@
     }
 
     // Event Bindings
-    elements.tabGemini.addEventListener('click', () => setProvider('gemini', 'gemini-2.5-flash'));
+    elements.tabGemini.addEventListener('click', () => setProvider('gemini', 'gemini-1.5-flash'));
     elements.tabOpenAI.addEventListener('click', () => setProvider('openai', 'gpt-4o-mini'));
 
     elements.toggleKeyBtn.addEventListener('click', () => {

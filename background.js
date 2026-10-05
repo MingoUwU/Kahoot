@@ -4,21 +4,23 @@ chrome.runtime.onInstalled.addListener(async () => {
         if (!stored.kqh_provider) {
             chrome.storage.local.set({
                 kqh_provider: 'gemini',
-                kqh_model: 'gemini-2.5-flash',
+                kqh_model: 'gemini-1.5-flash',
                 kqh_macro_enabled: false,
                 kqh_macro_delay: 0.3
             });
         }
     });
 
-    // Auto-inject into existing open Kahoot tabs without requiring manual F5
+    // Auto-inject into existing open Kahoot & Quiz.com tabs without requiring manual F5
     try {
         const tabs = await chrome.tabs.query({
             url: [
                 '*://kahoot.it/*',
                 '*://*.kahoot.it/*',
                 '*://kahoot.com/*',
-                '*://*.kahoot.com/*'
+                '*://*.kahoot.com/*',
+                '*://quiz.com/*',
+                '*://*.quiz.com/*'
             ]
         });
 

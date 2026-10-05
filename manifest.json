@@ -9,6 +9,8 @@
         "*://*.kahoot.it/*",
         "*://kahoot.com/*",
         "*://*.kahoot.com/*",
+        "*://quiz.com/*",
+        "*://*.quiz.com/*",
         "https://generativelanguage.googleapis.com/*",
         "https://api.openai.com/*"
     ],
@@ -20,7 +22,9 @@
                 "*://kahoot.it/*",
                 "*://*.kahoot.it/*",
                 "*://kahoot.com/*",
-                "*://*.kahoot.com/*"
+                "*://*.kahoot.com/*",
+                "*://quiz.com/*",
+                "*://*.quiz.com/*"
             ],
             "js": ["content-bridge.js"],
             "world": "ISOLATED",
@@ -31,7 +35,9 @@
                 "*://kahoot.it/*",
                 "*://*.kahoot.it/*",
                 "*://kahoot.com/*",
-                "*://*.kahoot.com/*"
+                "*://*.kahoot.com/*",
+                "*://quiz.com/*",
+                "*://*.quiz.com/*"
             ],
             "js": ["content.js"],
             "world": "MAIN",
@@ -65,7 +71,9 @@
             "*://kahoot.it/*",
             "*://*.kahoot.it/*",
             "*://kahoot.com/*",
-            "*://*.kahoot.com/*"
+            "*://*.kahoot.com/*",
+            "*://quiz.com/*",
+            "*://*.quiz.com/*"
         ]
     }]
 }

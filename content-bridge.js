@@ -70,7 +70,7 @@
         ], (stored) => {
             sendToMain({
                 kqh_provider: stored.kqh_provider || 'gemini',
-                kqh_model: stored.kqh_model || 'gemini-2.5-flash',
+                kqh_model: stored.kqh_model || 'gemini-1.5-flash',
                 kqh_api_key: stored.kqh_api_key || '',
                 kqh_macro_enabled: Boolean(stored.kqh_macro_enabled),
                 kqh_macro_delay: stored.kqh_macro_delay !== undefined ? stored.kqh_macro_delay : 1.2
